@@ -1,0 +1,33 @@
+{
+    "os": "macOS-13.0.1-arm64-i386-64bit",
+    "python": "3.10.0",
+    "heartbeatAt": "2023-06-17T20:15:09.814722",
+    "startedAt": "2023-06-17T20:15:09.122038",
+    "docker": null,
+    "cuda": null,
+    "args": [
+        "/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/dh-evaluation-renamed/",
+        "/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/dh-evaluation-renamed/"
+    ],
+    "state": "running",
+    "program": "/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/retrieval_interface/streamlit_app.py",
+    "codePath": "retrieval_interface/streamlit_app.py",
+    "git": {
+        "remote": "https://github.com/dilipupf/dh-freesound-crossmodal-search.git",
+        "commit": "979c4b1305be251084e0fe8fcee45ef230048bec"
+    },
+    "email": "dilip.harish01@estudiant.upf.edu",
+    "root": "/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search",
+    "host": "dilips-macbook-pro.home",
+    "username": "dilipharish",
+    "executable": "/Users/dilipharish/Library/Caches/pypoetry/virtualenvs/freesound-crossmodal-search-rhICCOhS-py3.10/bin/python",
+    "cpu_count": 8,
+    "cpu_count_logical": 8,
+    "disk": {
+        "total": 460.4317207336426,
+        "used": 8.222919464111328
+    },
+    "memory": {
+        "total": 16.0
+    }
+}

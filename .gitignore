@@ -1,6 +1,8 @@
 .vector_cache
 lightning_logs/
-
+data/
+runs/
+rename_audio_files.ipynb
 
 ## Editors  ###
 

@@ -1,3 +1,7 @@
+from crossmodal_alignment.retrieval_model import (
+    AudioEmbeddingTorchText,
+    TransformersModel,
+)
 import argparse
 import os
 from functools import partial
@@ -8,11 +12,19 @@ import streamlit as st
 import torch
 import torchaudio
 from tqdm import tqdm
+import wandb
+run = wandb.init(project="dh-freesound-crossmodal", entity="dilipharis")
 
-from crossmodal_alignment.retrieval_model import (
-    AudioEmbeddingTorchText,
-    TransformersModel,
-)
+# from torch.utils.tensorboard import SummaryWriter
+# writer = SummaryWriter(log_dir='runs/inference')
+
+# start a new wandb run to track this script
+
+
+def display_horizontal_stars(num_stars):
+    star_emoji = "⭐️"  # Unicode character for BLACK STAR
+    horizontal_stars = "".join([star_emoji for _ in range(num_stars)])
+    st.markdown(horizontal_stars)
 
 
 @st.cache_resource
@@ -81,12 +93,28 @@ def main(model, name_to_result_mapping):
         with torch.inference_mode():
             embedded_query = model.get_text_embedding(query)
         similarities = torch.cosine_similarity(embedded_query, ref_audios)
-        matches, match_indices = torch.topk(similarities, k=10)
+        matches, match_indices = torch.topk(similarities, k=k)
         for match, idx in zip(matches, match_indices.tolist()):
             result_path = Path(ref_names[idx])
             st.write(f"{result_path}")
             st.audio(str(name_to_result_mapping(result_path)))
+            slider_key = f"rating_{idx}"
+            x = st.slider(
+                'How relevant is the above audio? Rate it between 1 to 5.', 1, 5, key=slider_key)
+            col1 = st.columns([2, 4, 2])
+
+            if x:
+                display_horizontal_stars(x)
+
             st.caption(f"Score: {match}")
+
+            # Log query, match, and score to TensorBoard
+            # writer.add_text('Query', query)
+            # writer.add_text('Match', str(result_path))
+            # writer.add_scalar('Score', match.item())
+
+    # Close the SummaryWriter object
+    # writer.close()
 
 
 desc = """Run a retrieval interface app to test a text-to-audio search system.

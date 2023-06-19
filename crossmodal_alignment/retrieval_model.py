@@ -1,3 +1,5 @@
+from crossmodal_alignment.modules.text import TorchTextWordEmbedding
+from crossmodal_alignment.modules.encoder import MultiLayerPerceptron
 from abc import abstractmethod
 from typing import Any
 import pytorch_lightning as pl
@@ -7,10 +9,13 @@ import torch.distributed as dist
 from pytorch_metric_learning import losses
 from torch import nn, optim
 from torchmetrics import MetricCollection, RetrievalRecall
-from transformers import AutoProcessor, ClapModel, ClapProcessor
+from transformers import AutoProcessor, ClapModel, ClapProcessor, AutoFeatureExtractor, AutoTokenizer
+import wandb
+import tqdm
+from torch.utils.data import DataLoader, Dataset
 
-from crossmodal_alignment.modules.encoder import MultiLayerPerceptron
-from crossmodal_alignment.modules.text import TorchTextWordEmbedding
+
+run = wandb.init(project="dh-freesound-crossmodal-search", entity="dilipharis")
 
 
 class TextAudioModel(pl.LightningModule):
@@ -63,7 +68,8 @@ class BiEncoder(TextAudioModel):
         indices_tuple = self._get_indices_tuple(
             audio_labels, text_labels, audio_comparables, text_comparables
         )
-        loss = self.loss(a_encoded, indices_tuple=indices_tuple, ref_emb=t_encoded)
+        loss = self.loss(
+            a_encoded, indices_tuple=indices_tuple, ref_emb=t_encoded)
         return {
             "loss": loss,
             "audio_outputs": (audio_labels, a_encoded, audio_comparables),
@@ -181,13 +187,16 @@ class BiEncoder(TextAudioModel):
             .unsqueeze(1)
             .repeat((1, ref_embs.shape[0]))
         )
-        targets = [[q == r for r in ref_comparables] for q in query_comparables]
+        targets = [[q == r for r in ref_comparables]
+                   for q in query_comparables]
         targets = torch.as_tensor(targets, device=self.device)
 
-        metrics_results = metric_collection(similarities, targets, query_indicators)
+        metrics_results = metric_collection(
+            similarities, targets, query_indicators)
         for metric in metrics_results:
             self.log(
-                metric, metrics_results[metric], sync_dist=pld.distributed_available()
+                metric, metrics_results[metric], sync_dist=pld.distributed_available(
+                )
             )
         metric_collection.reset()
         return results
@@ -210,11 +219,13 @@ class AudioEmbeddingTorchText(BiEncoder):
         target_dim: int,
         ttext_emb_name: str = "fasttext.en.300d",
     ):
-        audio_emb_adapter = MultiLayerPerceptron(audio_emb_dim, target_dim, target_dim)
+        audio_emb_adapter = MultiLayerPerceptron(
+            audio_emb_dim, target_dim, target_dim)
         text_emb = TorchTextWordEmbedding(ttext_emb_name)
 
         text_encoder = nn.Sequential(
-            text_emb, MultiLayerPerceptron(text_emb.dim, target_dim, target_dim)
+            text_emb, MultiLayerPerceptron(
+                text_emb.dim, target_dim, target_dim)
         )
         super().__init__(audio_emb_adapter, text_encoder)
 
@@ -223,8 +234,11 @@ class TransformersModel(TextAudioModel):
     def __init__(self, ckpt="laion/clap-htsat-fused") -> None:
         super().__init__()
         self.model = ClapModel.from_pretrained(ckpt)
+        # : Clap Processor is a type hint to specify the type of the self.processor variable
         self.processor: ClapProcessor = AutoProcessor.from_pretrained(ckpt)
         self.sampling_rate = self.processor.feature_extractor.sampling_rate
+        self.feature_extractor = AutoFeatureExtractor.from_pretrained(ckpt)
+        self.tokenizer = AutoTokenizer.from_pretrained(ckpt)
 
     def forward(self, audio, text):
         inputs = self.processor(
@@ -234,11 +248,11 @@ class TransformersModel(TextAudioModel):
         return outputs.logits_per_audio
 
     def get_audio_embedding(self, audio):
-        inputs = self.processor(audios=audio, return_tensors="pt")
+        inputs = self.feature_extractor(audios=audio, return_tensors="pt")
         audio_features = self.model.get_audio_features(**inputs)
         return audio_features.squeeze()
 
     def get_text_embedding(self, text):
-        inputs = self.processor(text=text, return_tensors="pt")
+        inputs = self.tokenizer(text=text, return_tensors="pt")
         text_features = self.model.get_text_features(**inputs)
         return text_features.squeeze()
