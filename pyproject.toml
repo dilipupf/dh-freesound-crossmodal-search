@@ -17,6 +17,7 @@ torchaudio = "<2"
 transformers = "^4.28.1"
 wandb = "^0.15.4"
 evaluate = "^0.4.0"
+laion-clap = "^1.1.4"
 
 
 [tool.poetry.group.dev.dependencies]
