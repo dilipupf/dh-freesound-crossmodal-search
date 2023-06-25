@@ -1,6 +1,8 @@
 .vector_cache
 lightning_logs/
-
+data/
+wandb/
+runs/
 
 ## Editors  ###
 
