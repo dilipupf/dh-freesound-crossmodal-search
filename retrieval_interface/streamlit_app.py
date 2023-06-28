@@ -153,7 +153,7 @@ def main(model, name_to_result_mapping):
         for match, idx in zip(batch_results, batch_result_indices):
 
             result_path = Path(ref_names[idx])
-            st.write(f"{result_path}")
+            # st.write(f"{result_path}")
             audio_file_name = str(name_to_result_mapping(result_path))
             st.audio(audio_file_name)
 
