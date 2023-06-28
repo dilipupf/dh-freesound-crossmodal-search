@@ -71,11 +71,11 @@ def save_results_to_csv(results):
     df = pd.DataFrame(results, columns=['query', 'batch_index',
                       'index_of_audio_output_tensor)', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
 
-    # check if results.csv exists and if it does then append the new results to it
-    if os.path.isfile('results.csv'):
-        df.to_csv('results.csv', mode='a', header=False, index=False)
+    # check if results_fgbg.csv exists and if it does then append the new results to it
+    if os.path.isfile('results_fgbg.csv'):
+        df.to_csv('results_fgbg.csv', mode='a', header=False, index=False)
     else:
-        df.to_csv('results.csv', mode='w', header=True, index=False)
+        df.to_csv('results_fgbg.csv', mode='w', header=True, index=False)
 
 
 def main(model, name_to_result_mapping):
@@ -104,12 +104,23 @@ def main(model, name_to_result_mapping):
         similarities = torch.cosine_similarity(
             embedded_query, ref_audios)
         # print('similarities', similarities.shape)
-        matches, match_indices = torch.topk(similarities, k=k)
-        # print('matches', match_indices)
-        # print('match', matches)
+        topk_values, topk_indices = torch.topk(similarities, k=k)
+        print('topk_values', topk_values)
+        print('topk_indices', topk_indices)
+
+        # Set the seed for reproducibility
+        seed = 123
+        random.seed(seed)
+        # Convert indices to a list and shuffle them randomly
+        shuffled_indices = topk_indices.tolist()
+        random.shuffle(shuffled_indices)
+
+        print('shuffled_indices', shuffled_indices)
+        # Retrieve the elements from the original tensor using shuffled indices
+        shuffled_values = similarities[shuffled_indices]
 
         batch_size = 10
-        num_results = len(matches)
+        num_results = len(topk_values)
         num_pages = num_results // batch_size + 1
 
         # Number of audio results per batch
@@ -119,8 +130,8 @@ def main(model, name_to_result_mapping):
         page = st.sidebar.slider("Page", 1, num_pages, 1)
         start_index = (page - 1) * batch_size
         end_index = min(page * batch_size, num_results)
-        batch_results = matches[start_index:end_index]
-        batch_result_indices = match_indices[start_index:end_index]
+        batch_results = shuffled_values[start_index:end_index]
+        batch_result_indices = shuffled_indices[start_index:end_index]
 
         st.header(f"{start_index+1} - {end_index } out of {k} results")
         # for batch in range(num_batches):
@@ -139,7 +150,7 @@ def main(model, name_to_result_mapping):
         random_number = random.randint(1000, 9999)
         # print(random_number)
 
-        for match, idx in zip(batch_results, batch_result_indices.tolist()):
+        for match, idx in zip(batch_results, batch_result_indices):
 
             result_path = Path(ref_names[idx])
             st.write(f"{result_path}")
@@ -169,7 +180,7 @@ def main(model, name_to_result_mapping):
         if st.button(f"Save Results"):
             if len(results) > 0:
                 save_results_to_csv(results)
-                st.success("Results saved to results.csv")
+                st.success("Results saved to results_fgbg.csv")
 
         # Next and Previous buttons
         # col_prev, col_next = st.columns(2)
