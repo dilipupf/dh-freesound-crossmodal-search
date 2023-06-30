@@ -93,7 +93,7 @@ def main(model, name_to_result_mapping):
 
     with st.sidebar:
         k = st.number_input(
-            "Number of results returned", value=10, min_value=1, max_value=100
+            "Number of results returned", value=20, min_value=1, max_value=100
         )
         st.write(f"Number of items in dataset {len(ref_names)}")
 
@@ -105,15 +105,15 @@ def main(model, name_to_result_mapping):
             embedded_query, ref_audios)
         # print('similarities', similarities.shape)
         topk_values, topk_indices = torch.topk(similarities, k=k)
-        print('topk_values', topk_values)
-        print('topk_indices', topk_indices)
+        # print('topk_values', topk_values)
+        # print('topk_indices', topk_indices)
 
         # Set the seed for reproducibility
-        seed = 123
-        random.seed(seed)
+
+        random_with_seed = random.Random(123)
         # Convert indices to a list and shuffle them randomly
         shuffled_indices = topk_indices.tolist()
-        random.shuffle(shuffled_indices)
+        random_with_seed.shuffle(shuffled_indices)
 
         print('shuffled_indices', shuffled_indices)
         # Retrieve the elements from the original tensor using shuffled indices
@@ -147,6 +147,7 @@ def main(model, name_to_result_mapping):
         # random.shuffle(batch_results)
 
         # geenrate a unique random number for each batch
+
         random_number = random.randint(1000, 9999)
         # print(random_number)
 
