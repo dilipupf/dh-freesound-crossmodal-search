@@ -1,0 +1,330 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 4,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/Users/dilipharish/Library/Caches/pypoetry/virtualenvs/freesound-crossmodal-search-rhICCOhS-py3.10/lib/python3.10/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html\n",
+      "  from .autonotebook import tqdm as notebook_tqdm\n"
+     ]
+    }
+   ],
+   "source": [
+    "from crossmodal_alignment.retrieval_model import TransformersModel\n",
+    "from functools import partial\n",
+    "from pathlib import Path\n",
+    "import numpy as np\n",
+    "import torch\n",
+    "import torchaudio\n",
+    "from tqdm import tqdm\n",
+    "import pandas as pd"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 5,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def load_audio_input(audio_path: Path, sampling_rate: int):\n",
+    "    if audio_path.suffix == \".npy\":\n",
+    "        return torch.from_numpy(np.load(audio_path))\n",
+    "    else:\n",
+    "        audio, sr = torchaudio.load(audio_path)\n",
+    "        audio = torchaudio.functional.resample(audio, sr, sampling_rate)\n",
+    "        return audio.mean(0)\n",
+    "\n",
+    "\n",
+    "\n",
+    "def build_audio_index(root_dir: Path, _audio_encoder, pattern: str = \"*.wav\", **kwargs):\n",
+    "    file_names = []\n",
+    "    audios = []\n",
+    "    for file in tqdm(root_dir.rglob(pattern)):\n",
+    "        with torch.inference_mode():\n",
+    "            input_audio = load_audio_input(file, **kwargs)\n",
+    "            embedded_audio = _audio_encoder(input_audio)\n",
+    "        audios.append(embedded_audio)\n",
+    "        file_names.append(file.name)\n",
+    "    return torch.stack(audios), file_names"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 6,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "data_dir = '/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation'\n",
+    "gt_csv = '/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/clotho_captions_evaluation.csv'\n",
+    "pred_csv = '/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/testoutput.csv'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 7,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stderr",
+     "output_type": "stream",
+     "text": [
+      "/Users/dilipharish/Library/Caches/pypoetry/virtualenvs/freesound-crossmodal-search-rhICCOhS-py3.10/lib/python3.10/site-packages/torchmetrics/utilities/prints.py:61: FutureWarning: Importing `RetrievalRecall` from `torchmetrics` was deprecated and will be removed in 2.0. Import `RetrievalRecall` from `torchmetrics.retrieval` instead.\n",
+      "  _future_warning(\n"
+     ]
+    }
+   ],
+   "source": [
+    "model = TransformersModel()\n",
+    "model.train(False)\n",
+    "ref_audios, ref_names = build_audio_index(\n",
+    "    Path(data_dir), model.get_audio_embedding, sampling_rate=model.sampling_rate\n",
+    ")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'ref_audios' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[3], line 1\u001b[0m\n\u001b[0;32m----> 1\u001b[0m \u001b[39mprint\u001b[39m(ref_audios[\u001b[39m0\u001b[39m:\u001b[39m2\u001b[39m])\n",
+      "\u001b[0;31mNameError\u001b[0m: name 'ref_audios' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "print(ref_audios[0:2])"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 8,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "def map_file_path(\n",
+    "    path_to_map: Path, source_root: Path, target_root: Path, new_ext: str | None = None\n",
+    "):\n",
+    "    if path_to_map.is_relative_to(source_root):\n",
+    "        sub_path = path_to_map.relative_to(source_root)\n",
+    "    else:\n",
+    "        sub_path = path_to_map\n",
+    "    new_path = target_root / sub_path\n",
+    "    if new_ext:\n",
+    "        return new_path.with_suffix(new_ext)\n",
+    "    return new_path\n",
+    "\n",
+    "name_to_result_mapping = partial(\n",
+    "    map_file_path, source_root=data_dir, target_root=data_dir, new_ext=\".wav\"\n",
+    ")\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "preds tensor([0.8000, 0.3000, 0.2000, 1.0000])\n"
+     ]
+    },
+    {
+     "data": {
+      "text/plain": [
+       "tensor(0.5000)"
+      ]
+     },
+     "execution_count": 9,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from torch import tensor\n",
+    "from torchmetrics.retrieval.recall import retrieval_recall\n",
+    "\n",
+    "preds  = tensor([0.8, 0.3,0.2, 1.0])\n",
+    "print('preds', preds)\n",
+    "target = tensor([1, 0, 1, 0])\n",
+    "retrieval_recall(preds, target, top_k=2)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "\n",
+    "def load_clotho_csv(fpath):\n",
+    "    caption_fnames = {}\n",
+    "\n",
+    "    rows = pd.read_csv(fpath)\n",
+    "    rows = [list(row) for row in rows.values]\n",
+    "\n",
+    "    for row in rows:\n",
+    "        for cap in row[1:]:  # captions\n",
+    "            caption_fnames[cap] = row[0]\n",
+    "\n",
+    "    return caption_fnames\n",
+    "\n",
+    "def load_clotho_output_csv(fpath):\n",
+    "    caption_fnames = {}\n",
+    "\n",
+    "\n",
+    "    rows = pd.read_csv(fpath)\n",
+    " \n",
+    "    rows = [list(row) for row in rows.values]\n",
+    "    \n",
+    "    for row in rows:\n",
+    "       caption_fnames[row[0]] = row[1:]\n",
+    "      \n",
+    "    return caption_fnames"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# gt_items = load_clotho_csv(gt_csv)\n",
+    "# print('gt_items', gt_items.items())\n",
+    "# from itertools import islice\n",
+    "# pred_items = load_clotho_output_csv(pred_csv)\n",
+    "# print('pred_items', len(pred_items))\n",
+    "\n",
+    "# for key, _ in gt_items.items():\n",
+    "#    print('key gt_items', key)\n",
+    "#    print('gt_items[key]', gt_items[key]) \n",
+    "#    print('pred_items[key]', pred_items[key])\n",
+    "\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 2,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'load_clotho_csv' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[2], line 1\u001b[0m\n\u001b[0;32m----> 1\u001b[0m gt_items \u001b[39m=\u001b[39m load_clotho_csv(gt_csv)\n\u001b[1;32m      2\u001b[0m pred_items \u001b[39m=\u001b[39m load_clotho_output_csv(pred_csv)\n\u001b[1;32m      4\u001b[0m \u001b[39m# from itertools import islice\u001b[39;00m\n\u001b[1;32m      5\u001b[0m \n\u001b[1;32m      6\u001b[0m \u001b[39m# for i, cap in islice(enumerate(gt_items), 5):\u001b[39;00m\n",
+      "\u001b[0;31mNameError\u001b[0m: name 'load_clotho_csv' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "gt_items = load_clotho_csv(gt_csv)\n",
+    "pred_items = load_clotho_output_csv(pred_csv)\n",
+    "\n",
+    "# from itertools import islice\n",
+    "\n",
+    "# for i, cap in islice(enumerate(gt_items), 5):\n",
+    "for cap, _ in gt_items.items():\n",
+    "    \n",
+    "    gt_fname = gt_items[cap]\n",
+    "    print('pred_items', list(pred_items.items()))\n",
+    "    pred_fnames = pred_items[cap]\n",
+    "\n",
+    "    print('gt_fname', gt_fname)\n",
+    "    print('pred_fnames', pred_fnames)\n",
+    "\n",
+    "\n",
+    "\n",
+    "    targets = torch.as_tensor([gt_fname == pred for pred in pred_fnames], dtype=torch.bool)\n",
+    "    # indexes = torch.as_tensor([i for pred in pred_fnames], dtype=torch.long)\n",
+    "\n",
+    "    # # Update retrieval metrics\n",
+    "    # R1(preds, targets, indexes=indexes)\n",
+    "    # R5(preds, targets, indexes=indexes)\n",
+    "    # R10(preds, targets, indexes=indexes)\n",
+    "    # mAP10(preds[:10], targets[:10], indexes=indexes[:10])\n",
+    "\n",
+    "    "
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 1,
+   "metadata": {},
+   "outputs": [
+    {
+     "ename": "NameError",
+     "evalue": "name 'gt_items' is not defined",
+     "output_type": "error",
+     "traceback": [
+      "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+      "\u001b[0;31mNameError\u001b[0m                                 Traceback (most recent call last)",
+      "Cell \u001b[0;32mIn[1], line 1\u001b[0m\n\u001b[0;32m----> 1\u001b[0m \u001b[39mfor\u001b[39;00m query, _ \u001b[39min\u001b[39;00m gt_items\u001b[39m.\u001b[39mitems():\n\u001b[1;32m      2\u001b[0m     embedded_query \u001b[39m=\u001b[39m model\u001b[39m.\u001b[39mget_text_embedding(query)\n\u001b[1;32m      3\u001b[0m     similarities \u001b[39m=\u001b[39m torch\u001b[39m.\u001b[39mcosine_similarity(\n\u001b[1;32m      4\u001b[0m             embedded_query, ref_audios)\n",
+      "\u001b[0;31mNameError\u001b[0m: name 'gt_items' is not defined"
+     ]
+    }
+   ],
+   "source": [
+    "\n",
+    "for query, _ in gt_items.items():\n",
+    "    embedded_query = model.get_text_embedding(query)\n",
+    "    similarities = torch.cosine_similarity(\n",
+    "            embedded_query, ref_audios)\n",
+    "#     topk_values, topk_indices = torch.topk(similarities, k=10)\n",
+    "    metrics = retrieval_recall(similarities, targets, top_k=10)\n",
+    "    print(metrics)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "freesound-crossmodal-search-rhICCOhS-py3.10",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.10.0"
+  },
+  "orig_nbformat": 4
+ },
+ "nbformat": 4,
+ "nbformat_minor": 2
+}

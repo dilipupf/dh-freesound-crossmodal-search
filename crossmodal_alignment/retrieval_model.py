@@ -18,9 +18,9 @@ class TextAudioModel(pl.LightningModule):
         super().__init__(*args, **kwargs)
         metrics = MetricCollection(
             {
-                "Recall/Recall@01": RetrievalRecall(k=1),
-                "Recall/Recall@05": RetrievalRecall(k=5),
-                "Recall/Recall@10": RetrievalRecall(k=10),
+                "Recall/Recall@01": RetrievalRecall(top_k=1),
+                "Recall/Recall@05": RetrievalRecall(top_k=5),
+                "Recall/Recall@10": RetrievalRecall(top_k=10),
             }
         )
         self.train_metrics = metrics.clone(postfix="/Train")
@@ -63,7 +63,8 @@ class BiEncoder(TextAudioModel):
         indices_tuple = self._get_indices_tuple(
             audio_labels, text_labels, audio_comparables, text_comparables
         )
-        loss = self.loss(a_encoded, indices_tuple=indices_tuple, ref_emb=t_encoded)
+        loss = self.loss(
+            a_encoded, indices_tuple=indices_tuple, ref_emb=t_encoded)
         return {
             "loss": loss,
             "audio_outputs": (audio_labels, a_encoded, audio_comparables),
@@ -181,13 +182,16 @@ class BiEncoder(TextAudioModel):
             .unsqueeze(1)
             .repeat((1, ref_embs.shape[0]))
         )
-        targets = [[q == r for r in ref_comparables] for q in query_comparables]
+        targets = [[q == r for r in ref_comparables]
+                   for q in query_comparables]
         targets = torch.as_tensor(targets, device=self.device)
 
-        metrics_results = metric_collection(similarities, targets, query_indicators)
+        metrics_results = metric_collection(
+            similarities, targets, query_indicators)
         for metric in metrics_results:
             self.log(
-                metric, metrics_results[metric], sync_dist=pld.distributed_available()
+                metric, metrics_results[metric], sync_dist=pld.distributed_available(
+                )
             )
         metric_collection.reset()
         return results
@@ -210,11 +214,13 @@ class AudioEmbeddingTorchText(BiEncoder):
         target_dim: int,
         ttext_emb_name: str = "fasttext.en.300d",
     ):
-        audio_emb_adapter = MultiLayerPerceptron(audio_emb_dim, target_dim, target_dim)
+        audio_emb_adapter = MultiLayerPerceptron(
+            audio_emb_dim, target_dim, target_dim)
         text_emb = TorchTextWordEmbedding(ttext_emb_name)
 
         text_encoder = nn.Sequential(
-            text_emb, MultiLayerPerceptron(text_emb.dim, target_dim, target_dim)
+            text_emb, MultiLayerPerceptron(
+                text_emb.dim, target_dim, target_dim)
         )
         super().__init__(audio_emb_adapter, text_encoder)
 

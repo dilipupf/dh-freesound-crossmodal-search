@@ -1,0 +1,101 @@
+query,batch_index,index_of_audio_output_tensor),audio_file_name,similarity_score_by_model,user_relevance_score,group
+thunderstorm occuring while its raining outside,1764,479,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Wind moaning through gap in door.wav,0.5122,1
+thunderstorm occuring while its raining outside,1764,1004,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Wind and Rain.wav,0.4415,5
+thunderstorm occuring while its raining outside,1764,187,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Chrysalism.wav,0.5637,9
+thunderstorm occuring while its raining outside,1764,333,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/growling thunder.wav,0.5496,7
+thunderstorm occuring while its raining outside,1764,727,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/2013622thunder.wav,0.4596,1
+thunderstorm occuring while its raining outside,1764,716,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Rain_thunder-20120406-154324.wav,0.488,8
+thunderstorm occuring while its raining outside,1764,816,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/07 storm - orage.wav,0.4955,10
+thunderstorm occuring while its raining outside,1764,533,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Thunder burst with rain.wav,0.5021,8
+thunderstorm occuring while its raining outside,1764,463,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/enoesque-Thunder and Rain 1.wav,0.5458,9
+thunderstorm occuring while its raining outside,1764,499,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Int. Car Drive 1.wav,0.4963,6
+thunderstorm occuring while its raining outside,1072,906,"/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/windy winter day, wind in trees, from distance.wav",0.4473,5
+thunderstorm occuring while its raining outside,1072,998,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Donner2.wav,0.5199,6
+thunderstorm occuring while its raining outside,1072,664,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/fdv_orage.wav,0.6038,10
+thunderstorm occuring while its raining outside,1072,136,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/AlleyWater.wav,0.4451,10
+thunderstorm occuring while its raining outside,1072,734,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Ambience in Sugadh (ESI institute) in Gujrat.wav,0.4369,2
+thunderstorm occuring while its raining outside,1072,822,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/kijjaz - Bangkok Rain and Thunder 01.wav,0.4371,8
+thunderstorm occuring while its raining outside,1072,113,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Rain hitting leafs.wav,0.4778,6
+thunderstorm occuring while its raining outside,1072,964,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Close Cracking Thunder.wav,0.5638,8
+thunderstorm occuring while its raining outside,1072,240,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/27 hn_birdspecking.wav,0.512,5
+thunderstorm occuring while its raining outside,1072,174,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Thunder - Guangzhou - China - Quiet.wav,0.5642,7
+large group of birds singing various patterns,3551,418,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/201106092013VauxsSwiftsSteigerwaldLakeNWR.wav,0.5637,7
+large group of birds singing various patterns,3551,194,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/20100422.waterfall.birds.wav,0.5089,10
+large group of birds singing various patterns,3551,787,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/OrchardBirds.wav,0.6002,9
+large group of birds singing various patterns,3551,577,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Tiergarten birds early morning.wav,0.5729,8
+large group of birds singing various patterns,3551,176,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/FOREST_BIRDS_WOODPECKER.wav,0.5342,7
+large group of birds singing various patterns,3551,256,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/City forest.wav,0.5462,9
+large group of birds singing various patterns,3551,720,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/STE-018_lisbonbirds.wav,0.5471,8
+large group of birds singing various patterns,3551,203,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/spring morning birds oiseaux reveil printemps #1.wav,0.5559,6
+large group of birds singing various patterns,3551,358,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Neighborhood  Bird Ambiance 3.wav,0.5691,7
+large group of birds singing various patterns,3551,331,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Swifts.wav,0.5486,7
+large group of birds singing various patterns,5097,217,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/20080320.farm.ambiance.2.wav,0.5282,10
+large group of birds singing various patterns,5097,498,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Spring Birds Raw (New Jersey).wav,0.569,7
+large group of birds singing various patterns,5097,691,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/FR.BirdChatAmbience.26.wav,0.6447,6
+large group of birds singing various patterns,5097,814,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/AMBIENCE- night time crickets insects wild sound (SFX).wav,0.5267,6
+large group of birds singing various patterns,5097,723,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Birds of Klein Profijt.wav,0.5061,10
+large group of birds singing various patterns,5097,467,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Ronda - The Old Shrine - La antigua Ermita.wav,0.5064,9
+large group of birds singing various patterns,5097,53,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Mockingbird singing @ Alfama.wav,0.5433,5
+large group of birds singing various patterns,5097,713,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/birds in dunes sunset NL 150510_06.wav,0.6134,7
+large group of birds singing various patterns,5097,675,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/sparrows.wav,0.5586,10
+large group of birds singing various patterns,5097,1025,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Kauai Sunrise.wav,0.6432,9
+sheep bleat to one another while children talk,2211,603,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/20121014_boat_tour_01.wav,0.3306,1
+sheep bleat to one another while children talk,2211,859,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Birds-sleeves-amb.wav,0.2636,1
+sheep bleat to one another while children talk,2211,725,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Spring Lambs at Middle Hulme Farm Near Meerbrook.wav,0.3869,5
+sheep bleat to one another while children talk,2211,165,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/20100422.castril.playground.wav,0.3679,5
+sheep bleat to one another while children talk,2211,429,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/boy becomes seagull 20.3.11.wav,0.2886,6
+sheep bleat to one another while children talk,2211,820,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/schoolyard.wav,0.2975,6
+sheep bleat to one another while children talk,2211,496,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Garden ambience.wav,0.305,6
+sheep bleat to one another while children talk,2211,2,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/trenecito_maqueta.wav,0.3165,3
+sheep bleat to one another while children talk,2211,814,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/AMBIENCE- night time crickets insects wild sound (SFX).wav,0.3572,5
+sheep bleat to one another while children talk,2211,436,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/20130406_tourists.06.wav,0.312,1
+sheep bleat to one another while children talk,6811,106,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Outdoor nature sounds.wav,0.2779,5
+sheep bleat to one another while children talk,6811,191,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/sw_PoultryBarn_cs8049.wav,0.3424,1
+sheep bleat to one another while children talk,6811,302,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/miniature goats and sheep.wav,0.6416,10
+sheep bleat to one another while children talk,6811,598,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Hunebed D27 Borger.wav,0.2743,5
+sheep bleat to one another while children talk,6811,503,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/crowdfree.wav,0.2601,5
+sheep bleat to one another while children talk,6811,800,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/walking-gravel.wav,0.2621,1
+sheep bleat to one another while children talk,6811,727,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/2013622thunder.wav,0.2923,1
+sheep bleat to one another while children talk,6811,105,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Otari Walk.wav,0.3994,5
+sheep bleat to one another while children talk,6811,973,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Pardelas.wav,0.3298,7
+sheep bleat to one another while children talk,6811,196,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Crowd Atmos.wav,0.4112,9
+coins dropped on a glass table,7592,809,"/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Queen Street Mill, loom running then stops.wav",0.2542,3
+coins dropped on a glass table,7592,378,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Tools Ratchet.wav,0.2081,1
+coins dropped on a glass table,7592,960,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/toy rattle 2.wav,0.2834,7
+coins dropped on a glass table,7592,624,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/box of valves.wav,0.2737,2
+coins dropped on a glass table,7592,706,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Door Creaking 01.wav,0.2148,1
+coins dropped on a glass table,7592,114,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/birds_stereo.wav,0.2291,1
+coins dropped on a glass table,7592,397,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/20080505_1309unlock_doors.wav,0.2405,6
+coins dropped on a glass table,7592,825,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Flipping Coin Can.wav,0.2458,5
+coins dropped on a glass table,7592,668,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Microwave Door Open Close .wav,0.2729,2
+coins dropped on a glass table,7592,276,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/sw_SolitaryCricket_NR_01.wav,0.2437,1
+coins dropped on a glass table,7619,893,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/bathroom fan.wav,0.2098,1
+coins dropped on a glass table,7619,488,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Drop Coin into Glass.wav,0.2579,9
+coins dropped on a glass table,7619,434,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Small Junk Dropped.wav,0.4081,10
+coins dropped on a glass table,7619,29,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/junk_box001.wav,0.2087,7
+coins dropped on a glass table,7619,872,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Remix of 101980__pyr0x__growl_variants.wav,0.2045,1
+coins dropped on a glass table,7619,66,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/slam.wav,0.2063,1
+coins dropped on a glass table,7619,852,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Roosters and dogs wake up in the small village of La Preciosita.  A morning in Mexican countryside.wav,0.2263,1
+coins dropped on a glass table,7619,213,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Drawer_handle_clap_OWI.wav,0.327,6
+coins dropped on a glass table,7619,1031,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Running Dirt Tennis Shoes.wav,0.2484,1
+coins dropped on a glass table,7619,531,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Metallic  Gate.wav,0.3761,1
+rain falling in the background with the knocking noise in the foreground,9822,681,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/crossing the river.wav,0.5796,5
+rain falling in the background with the knocking noise in the foreground,9822,417,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Storm coming.wav,0.5149,5
+rain falling in the background with the knocking noise in the foreground,9822,710,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/End of rain 090707.wav,0.6167,5
+rain falling in the background with the knocking noise in the foreground,9822,785,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Hail 1.wav,0.6016,8
+rain falling in the background with the knocking noise in the foreground,9822,986,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/walking-wooden-bridge-fall-leafs-creek.wav,0.5299,10
+rain falling in the background with the knocking noise in the foreground,9822,816,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/07 storm - orage.wav,0.5553,6
+rain falling in the background with the knocking noise in the foreground,9822,453,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/laundry.machine.wav,0.5577,10
+rain falling in the background with the knocking noise in the foreground,9822,122,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Rain Outside window from the indoor version.wav,0.5659,10
+rain falling in the background with the knocking noise in the foreground,9822,113,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Rain hitting leafs.wav,0.5994,6
+rain falling in the background with the knocking noise in the foreground,9822,810,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/tin cans wind 1 - 16.1.11.wav,0.5598,5
+rain falling in the background with the knocking noise in the foreground,1332,73,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Gentle Rain on Concrete.wav,0.5212,8
+rain falling in the background with the knocking noise in the foreground,1332,240,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/27 hn_birdspecking.wav,0.5982,5
+rain falling in the background with the knocking noise in the foreground,1332,630,"/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/spring, road.wav",0.6694,7
+rain falling in the background with the knocking noise in the foreground,1332,813,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/15_Rain_Ocean_HeavierLighter_44_16.wav,0.5191,10
+rain falling in the background with the knocking noise in the foreground,1332,1,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Tires car without an engine.wav,0.5015,7
+rain falling in the background with the knocking noise in the foreground,1332,560,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Terminal2.wav,0.5093,9
+rain falling in the background with the knocking noise in the foreground,1332,447,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/130915 - Exterior-Hard Rain - Door - Thunder - Metal Lawn Furniture.wav,0.5387,7
+rain falling in the background with the knocking noise in the foreground,1332,335,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Barn_Door_Wind_001.wav,0.6215,8
+rain falling in the background with the knocking noise in the foreground,1332,1029,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Swim Meet.wav,0.567,9
+rain falling in the background with the knocking noise in the foreground,1332,533,/Users/dilipharish/Master-Thesis/dh-freesound-crossmodal-search/data/audio/evaluation/Thunder burst with rain.wav,0.6256,10

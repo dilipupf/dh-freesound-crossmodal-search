@@ -72,10 +72,10 @@ def save_results_to_csv(results):
                       'index_of_audio_output_tensor)', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
 
     # check if results_fgbg.csv exists and if it does then append the new results to it
-    if os.path.isfile('results_fgbg.csv'):
-        df.to_csv('results_fgbg.csv', mode='a', header=False, index=False)
+    if os.path.isfile('results_fgbg_sam.csv'):
+        df.to_csv('results_fgbg_sam.csv', mode='a', header=False, index=False)
     else:
-        df.to_csv('results_fgbg.csv', mode='w', header=True, index=False)
+        df.to_csv('results_fgbg_sam.csv', mode='w', header=True, index=False)
 
 
 def main(model, name_to_result_mapping):
@@ -181,7 +181,7 @@ def main(model, name_to_result_mapping):
         if st.button(f"Save Results"):
             if len(results) > 0:
                 save_results_to_csv(results)
-                st.success("Results saved to results_fgbg.csv")
+                st.success("Results saved to results_fgbg_sam.csv")
 
         # Next and Previous buttons
         # col_prev, col_next = st.columns(2)

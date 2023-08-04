@@ -3,6 +3,7 @@ lightning_logs/
 data/
 wandb/
 runs/
+.env
 
 ## Editors  ###
 

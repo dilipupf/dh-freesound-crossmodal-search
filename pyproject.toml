@@ -18,6 +18,13 @@ transformers = "^4.28.1"
 nltk = "^3.8.1"
 plotly = "^5.15.0"
 matplotlib = "^3.7.1"
+spacy = "^3.1.0"
+en-core-web-sm = {url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.1.0/en_core_web_sm-3.1.0.tar.gz"}
+altair = "^5.0.1"
+openai = "^0.27.8"
+nbformat = "^5.9.2"
+python-decouple = "^3.8"
+
 
 
 [tool.poetry.group.dev.dependencies]
