@@ -134,17 +134,6 @@ def main(model, name_to_result_mapping):
         batch_result_indices = shuffled_indices[start_index:end_index]
 
         st.header(f"{start_index+1} - {end_index } out of {k} results")
-        # for batch in range(num_batches):
-
-        #     st.subheader(f"Batch {batch+1}/{num_batches}")
-
-        #     start_index = batch * batch_size
-        #     end_index = (batch + 1) * batch_size
-        #     batch_matches = matches[start_index:end_index]
-        #     batch_match_indices = match_indices[start_index:end_index]
-
-        # Shuffle the batch randomly
-        # random.shuffle(batch_results)
 
         # geenrate a unique random number for each batch
 
@@ -158,8 +147,7 @@ def main(model, name_to_result_mapping):
             audio_file_name = str(name_to_result_mapping(result_path))
             st.audio(audio_file_name)
 
-            # relevance_score = st.radio('How relevant is the above audio? Rate it between 1 to 10:', list(
-            #     range(1, 11)), key=slider_key)
+    
 
             slider_key = f"rating_{idx}"
             # Display the radio buttons for rating
@@ -183,26 +171,6 @@ def main(model, name_to_result_mapping):
                 save_results_to_csv(results)
                 st.success("Results saved to results_fgbg_sam.csv")
 
-        # Next and Previous buttons
-        # col_prev, col_next = st.columns(2)
-        # if page > 1:
-        #     if col_prev.button("Previous"):
-        #         print('previous button before update', page)
-        #         page -= 1
-        #         page = st.session_state.page
-        #         print('previous button after update', page)
-        # if page < num_pages:
-        #     if col_next.button("Next"):
-        #         print('Next button before click', page)
-        #         st.session_state.page += 1
-        #         page = st.session_state.page
-        #         print('Next button after click', page)
-
-        # if st.button("Next"):
-        #     page += 1
-        #     print('page', page)
-        # if st.button("Previous"):
-        #     page -= 1
 
         # Rerun the app to display the updated page
         if page != st.session_state.page:
@@ -235,13 +203,15 @@ try:
 except:
     st.code(parser.format_help())
     raise
+data_direc = Path('data/audio/dh-new_scapes')
+audio_direc = Path('data/audio/dh-new_scapes')
 
 model = load_model(args.ckpt_path)
 ref_audios, ref_names = build_audio_index(
-    args.data_dir, model.get_audio_embedding, sampling_rate=model.sampling_rate
+    data_direc, model.get_audio_embedding, sampling_rate=model.sampling_rate
 )
 name_to_result_mapping = partial(
-    map_file_path, source_root=args.data_dir, target_root=args.audio_dir, new_ext=".wav"
+    map_file_path, source_root= data_direc, target_root=audio_direc, new_ext=".wav"
 )
 
 main(model, name_to_result_mapping)

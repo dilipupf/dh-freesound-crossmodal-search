@@ -24,6 +24,8 @@ altair = "^5.0.1"
 openai = "^0.27.8"
 nbformat = "^5.9.2"
 python-decouple = "^3.8"
+boto3 = "^1.28.20"
+smart-open = "^6.3.0"
 
 
 

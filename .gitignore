@@ -4,6 +4,7 @@ data/
 wandb/
 runs/
 .env
+.streamlit/secrets.toml
 
 ## Editors  ###
 
