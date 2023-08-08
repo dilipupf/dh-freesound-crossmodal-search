@@ -24,11 +24,17 @@ from crossmodal_alignment.retrieval_model import (
     TransformersModel,
 )
 
-aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-bucket_name = os.getenv('AWS_BUCKET_NAME')
-bucket_region = os.getenv('AWS_DEFAULT_REGION')
-database_name = os.getenv('DATABASE_NAME')
+# aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+# aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+# bucket_name = os.getenv('AWS_BUCKET_NAME')
+# bucket_region = os.getenv('AWS_DEFAULT_REGION')
+# database_name = os.getenv('DATABASE_NAME')
+
+aws_access_key_id = st.secrets['AWS_ACCESS_KEY_ID']  
+aws_secret_access_key = st.secrets['AWS_SECRET_ACCESS_KEY']
+bucket_name = st.secrets['AWS_BUCKET_NAME']
+bucket_region = st.secrets['AWS_DEFAULT_REGION']
+database_name = st.secrets['DATABASE_NAME']
 
 def display_horizontal_stars(num_stars):
     star_emoji = "⭐️"  # Unicode character for BLACK STAR
