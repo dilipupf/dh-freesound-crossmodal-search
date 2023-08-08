@@ -9,12 +9,26 @@ import torchaudio
 from tqdm import tqdm
 import random
 import pandas as pd
+from decouple import config
+from dotenv import load_dotenv
+import os
+import boto3
+
+from smart_open import open
+
+dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
+load_dotenv(dotenv_path)
 
 from crossmodal_alignment.retrieval_model import (
     AudioEmbeddingTorchText,
     TransformersModel,
 )
 
+aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+bucket_name = os.getenv('AWS_BUCKET_NAME')
+bucket_region = os.getenv('AWS_DEFAULT_REGION')
+database_name = os.getenv('DATABASE_NAME')
 
 def display_horizontal_stars(num_stars):
     star_emoji = "⭐️"  # Unicode character for BLACK STAR
@@ -33,25 +47,65 @@ def load_model(ckpt: str | os.PathLike | None = None):
 
 
 def load_audio_input(audio_path: Path, sampling_rate: int):
-    if audio_path.suffix == ".npy":
-        return torch.from_numpy(np.load(audio_path))
-    else:
-        audio, sr = torchaudio.load(audio_path)
-        audio = torchaudio.functional.resample(audio, sr, sampling_rate)
-        return audio.mean(0)
+    # if audio_path.suffix == ".npy":
+    #     return torch.from_numpy(np.load(audio_path))
+    # else:
+    audio, sr = torchaudio.load(audio_path)
+    audio = torchaudio.functional.resample(audio, sr, sampling_rate)
+    return audio.mean(0)
 
 
 @st.cache_data
 def build_audio_index(root_dir: Path, _audio_encoder, pattern: str = "*.wav", **kwargs):
     file_names = []
     audios = []
-    for file in tqdm(root_dir.rglob(pattern)):
+    limit = 10
+    for index, file in enumerate(tqdm(root_dir.rglob(pattern))):
+        if index > limit:
+            break
+
         with torch.inference_mode():
             input_audio = load_audio_input(file, **kwargs)
             embedded_audio = _audio_encoder(input_audio)
         audios.append(embedded_audio)
         file_names.append(file.name)
     return torch.stack(audios), file_names
+
+
+
+@st.cache_data
+def build_audio_index_s3(bucket_name, folder_path, _audio_encoder, sampling_rate):
+
+ 
+    # Initialize the S3 client
+    s3 = boto3.client('s3',
+                      aws_access_key_id=aws_access_key_id,
+                      aws_secret_access_key=aws_secret_access_key,
+                      region_name=bucket_region)
+
+    # List objects (files) in the specified S3 folder with the given pattern
+    objects = s3.list_objects_v2(Bucket=bucket_name, Prefix=folder_path)
+    
+
+    s3_file_names = []
+    audios = []
+
+    if 'Contents' in objects:
+        for obj in objects['Contents'][:20]:
+            key = obj['Key']
+            # print(f"Reading file: {key}")
+            s3_file_path = f's3://{bucket_name}/{key}'
+            # Read the audio file content directly from S3 using smart_open
+            with open(s3_file_path, 'rb') as file:
+                # Modify the load_audio_input function to handle S3 file path
+                input_audio = load_audio_input(file, sampling_rate)
+                embedded_audio = _audio_encoder(input_audio)
+            audios.append(embedded_audio)
+            s3_file_names.append(s3_file_path)
+
+    return torch.stack(audios), s3_file_names
+
+
 
 
 def map_file_path(
@@ -78,7 +132,7 @@ def save_results_to_csv(results):
         df.to_csv('results_fgbg_sam.csv', mode='w', header=True, index=False)
 
 
-def main(model, name_to_result_mapping):
+def main(model):
     st.title("Cross-modal Search Demo")
 
     query = st.text_input(
@@ -142,12 +196,16 @@ def main(model, name_to_result_mapping):
 
         for match, idx in zip(batch_results, batch_result_indices):
 
-            result_path = Path(ref_names[idx])
+            s3_audio_file_path = ref_names[idx]
             # st.write(f"{result_path}")
-            audio_file_name = str(name_to_result_mapping(result_path))
-            st.audio(audio_file_name)
+            # audio_file_name = str(name_to_result_mapping(result_path))
+            with open(s3_audio_file_path, 'rb') as file:
+                # Modify the load_audio_input function to handle S3 file path
+                input_audio = file.read()
+            
+            st.audio(input_audio, format='audio/wav')
 
-    
+            audio_file_name = s3_audio_file_path.split('/')[-1]
 
             slider_key = f"rating_{idx}"
             # Display the radio buttons for rating
@@ -185,16 +243,16 @@ Query results are displayed by mapping paths of matching files to AUDIO_DIR.
 """
 
 parser = argparse.ArgumentParser(description=desc)
-parser.add_argument(
-    "data_dir",
-    help="Root directory of all audio inputs to be indexed by the model",
-    type=Path,
-)
-parser.add_argument(
-    "audio_dir",
-    help="Root directory of all audio inputs used to display as results",
-    type=Path,
-)
+# parser.add_argument(
+#     "data_dir",
+#     help="Root directory of all audio inputs to be indexed by the model",
+#     type=Path,
+# )
+# parser.add_argument(
+#     "audio_dir",
+#     help="Root directory of all audio inputs used to display as results",
+#     type=Path,
+# )
 parser.add_argument(
     "--ckpt_path", help="Path to a checkpoint to load the model from", type=Path
 )
@@ -203,15 +261,25 @@ try:
 except:
     st.code(parser.format_help())
     raise
-data_direc = Path('data/audio/dh-new_scapes')
-audio_direc = Path('data/audio/dh-new_scapes')
+# data_direc = Path('data/audio/dh-new_scapes')
+# audio_direc = Path('data/audio/dh-new_scapes')
 
 model = load_model(args.ckpt_path)
-ref_audios, ref_names = build_audio_index(
-    data_direc, model.get_audio_embedding, sampling_rate=model.sampling_rate
-)
-name_to_result_mapping = partial(
-    map_file_path, source_root= data_direc, target_root=audio_direc, new_ext=".wav"
-)
+# ref_audios, ref_names = build_audio_index(
+#     data_direc, model.get_audio_embedding, sampling_rate=model.sampling_rate
+# )
 
-main(model, name_to_result_mapping)
+
+
+# name_to_result_mapping = partial(
+#     map_file_path, source_root= data_direc, target_root=audio_direc, new_ext=".wav"
+# )
+
+
+
+
+
+folder_path = 'dh-new_scapes/'
+
+ref_audios, ref_names = build_audio_index_s3(bucket_name, folder_path, model.get_audio_embedding,  sampling_rate=model.sampling_rate)
+main(model)
