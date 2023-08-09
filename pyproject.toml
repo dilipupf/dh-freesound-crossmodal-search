@@ -27,6 +27,8 @@ python-decouple = "^3.8"
 boto3 = "^1.28.20"
 smart-open = "^6.3.0"
 python-dotenv = "^1.0.0"
+gsheetsdb = "^0.1.13.1"
+gspread = "^5.10.0"
 
 
 

@@ -919,6 +919,42 @@ files = [
 protobuf = ["grpcio-tools (>=1.56.2)"]
 
 [[package]]
+name = "gsheetsdb"
+version = "0.1.13.1"
+description = "Python DB-API and SQLAlchemy interface for Google Spreadsheets."
+optional = false
+python-versions = "*"
+files = [
+    {file = "gsheetsdb-0.1.13.1.tar.gz", hash = "sha256:d8c20db4f1521cf5c1eebdf2eeac91a7e726ba1ec03845e8dd35cfd49feebf88"},
+]
+
+[package.dependencies]
+google-auth = "*"
+moz_sql_parser = "*"
+requests = ">=2.20.0"
+six = "*"
+
+[package.extras]
+cli = ["docopt", "prompt_toolkit (>=2)", "pygments", "tabulate"]
+dev = ["coverage", "flake8", "nose", "pipreqs", "pytest (>=2.8)", "pytest-cov", "requests_mock", "twine"]
+sqlalchemy = ["sqlalchemy"]
+
+[[package]]
+name = "gspread"
+version = "5.10.0"
+description = "Google Spreadsheets Python API"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "gspread-5.10.0-py3-none-any.whl", hash = "sha256:f58b15d950ef5c45c8607edb3687188d5a543f2b66242f9c26fbb0d2cf36169d"},
+    {file = "gspread-5.10.0.tar.gz", hash = "sha256:2b6bba6dc111580170346a9bcd1893e0e8c52f67a9e537caec7b7a1e27c14435"},
+]
+
+[package.dependencies]
+google-auth = ">=1.12.0"
+google-auth-oauthlib = ">=0.4.1"
+
+[[package]]
 name = "huggingface-hub"
 version = "0.16.4"
 description = "Client library to download and publish models, datasets and other repos on the huggingface.co hub"
@@ -1392,6 +1428,88 @@ files = [
     {file = "mdurl-0.1.2-py3-none-any.whl", hash = "sha256:84008a41e51615a49fc9966191ff91509e3c40b939176e643fd50a5c2196b8f8"},
     {file = "mdurl-0.1.2.tar.gz", hash = "sha256:bb413d29f5eea38f31dd4754dd7377d4465116fb207585f97bf925588687c1ba"},
 ]
+
+[[package]]
+name = "mo-dots"
+version = "4.22.21108"
+description = "More Dots! Dot-access to Python dicts like Javascript"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mo-dots-4.22.21108.tar.gz", hash = "sha256:f9f2f9a6e44e214959aecd55857b6df487b8e86daf51334e2e982d47ea33ed23"},
+]
+
+[package.dependencies]
+mo-future = "3.147.20327"
+mo-imports = "3.149.20327"
+
+[[package]]
+name = "mo-future"
+version = "3.147.20327"
+description = "More future! Make Python 2/3 compatibility a bit easier"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mo-future-3.147.20327.tar.gz", hash = "sha256:4aafcf859e4657bc11b04ee9791321e2d44702604ae01cac7c412468cb6a513f"},
+]
+
+[[package]]
+name = "mo-imports"
+version = "3.149.20327"
+description = "More Imports! - Delayed importing"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mo-imports-3.149.20327.tar.gz", hash = "sha256:32e3dc720c84765224d29ed7e9d6972a369d41d756e6f26ddb5b7aa01241331d"},
+]
+
+[package.dependencies]
+mo-future = "3.147.20327"
+
+[[package]]
+name = "mo-kwargs"
+version = "4.22.21108"
+description = "More KWARGS! Let call parameters override kwargs"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mo-kwargs-4.22.21108.tar.gz", hash = "sha256:9c9d00ab86f1f75013193807d90cad17cbc515384cf3b17b8aff3104a300f7ce"},
+]
+
+[package.dependencies]
+mo-dots = "4.22.21108"
+mo-future = "3.147.20327"
+
+[[package]]
+name = "mo-logs"
+version = "4.23.21108"
+description = "More Logs! Structured Logging and Exception Handling"
+optional = false
+python-versions = "*"
+files = [
+    {file = "mo-logs-4.23.21108.tar.gz", hash = "sha256:de4136a7ce215ecbfd7a368588be0a3f1fd8a6521dc2d4aae57cc1c3ba299aab"},
+]
+
+[package.dependencies]
+mo-dots = "4.22.21108"
+mo-future = "3.147.20327"
+mo-imports = "3.149.20327"
+mo-kwargs = "4.22.21108"
+
+[[package]]
+name = "moz-sql-parser"
+version = "4.40.21126"
+description = "Extract Parse Tree from SQL"
+optional = false
+python-versions = "*"
+files = [
+    {file = "moz-sql-parser-4.40.21126.tar.gz", hash = "sha256:b3d37cc8ff118d86009aa12646791549537ec0ae8ac312efd4641289c8eee080"},
+]
+
+[package.dependencies]
+mo-dots = "4.22.21108"
+mo-future = "3.147.20327"
+mo-logs = "4.23.21108"
 
 [[package]]
 name = "multidict"
@@ -3770,4 +3888,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "7afa5e8d8f5f5fa0fb980dae2c38baf7578ba1f03eea94803305da1ba04861fa"
+content-hash = "42e58ca710259b930b739c0b1fbf2a8680d89fd7780e89934dae683e173076af"

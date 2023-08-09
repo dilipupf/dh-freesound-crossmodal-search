@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 import os
 import boto3
 import json
+from google.oauth2 import service_account
+import gspread
 
 from smart_open import open
 
@@ -36,6 +38,26 @@ aws_secret_access_key = st.secrets['AWS_SECRET_ACCESS_KEY']
 bucket_name = st.secrets['AWS_BUCKET_NAME']
 bucket_region = st.secrets['AWS_DEFAULT_REGION']
 database_name = st.secrets['DATABASE_NAME']
+
+# Create a connection object.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"],
+    scopes=[
+        "https://www.googleapis.com/auth/spreadsheets",
+    ],
+)
+gc = gspread.authorize(credentials)
+
+# Get the Google Sheet by URL.
+sheet_url = st.secrets["private_gsheets_url"]
+sheet = gc.open_by_url(sheet_url)
+
+# Function to find the last filled row in the worksheet.
+def find_last_filled_row(worksheet):
+    return len(worksheet.get_all_values()) + 1
+
+
+
 
 def display_horizontal_stars(num_stars):
     star_emoji = "⭐️"  # Unicode character for BLACK STAR
@@ -128,15 +150,26 @@ def map_file_path(
     return new_path
 
 
-def save_results_to_csv(results):
-    df = pd.DataFrame(results, columns=['query', 'batch_index',
-                      'index_of_audio_output_tensor)', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
+def save_results_to_google_sheets(results):
+    # df = pd.DataFrame(results, columns=['query', 'batch_index',
+    #                   'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
 
-    # check if results_fgbg.csv exists and if it does then append the new results to it
-    if os.path.isfile('results_fgbg_sam.csv'):
-        df.to_csv('results_fgbg_0908.csv', mode='a', header=False, index=False)
-    else:
-        df.to_csv('results_fgbg_0908.csv', mode='w', header=True, index=False)
+    # # check if results_fgbg.csv exists and if it does then append the new results to it
+    # if os.path.isfile('results_fgbg_sam.csv'):
+    #     df.to_csv('results_fgbg_0908.csv', mode='a', header=False, index=False)
+    # else:
+    #     df.to_csv('results_fgbg_0908.csv', mode='w', header=True, index=False)
+    # Your DataFrame with data to be inserted
+    df = pd.DataFrame(results, columns=['query', 'batch_index', 'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
+
+    worksheet = sheet.get_worksheet(0)  # Replace 0 with the index of your desired worksheet
+    values = df.values.tolist()
+
+    # Find the last filled row
+    last_filled_row = find_last_filled_row(worksheet)
+
+    # Insert the data after the last filled row
+    worksheet.insert_rows(values, last_filled_row)
 
 
 def main(model):
@@ -250,8 +283,8 @@ def main(model):
         # Add a save button
         if st.button(f"Save Results"):
             if len(results) > 0:
-                save_results_to_csv(results)
-                st.success("Results saved to results_fgbg_sam.csv")
+                save_results_to_google_sheets(results)
+                st.success("Results saved to database!")
 
 
         # Rerun the app to display the updated page
