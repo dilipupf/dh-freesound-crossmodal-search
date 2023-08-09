@@ -13,6 +13,7 @@ from decouple import config
 from dotenv import load_dotenv
 import os
 import boto3
+import json
 
 from smart_open import open
 
@@ -156,6 +157,16 @@ def main(model):
             "Number of results returned", value=20, min_value=1, max_value=100
         )
         st.write(f"Number of items in dataset {len(ref_names)}")
+    
+    # Initialize the S3 client
+    s3 = boto3.client('s3',
+                      aws_access_key_id=aws_access_key_id,
+                      aws_secret_access_key=aws_secret_access_key,
+                      region_name=bucket_region)
+
+    # List objects (files) in the specified S3 folder with the given pattern
+    response = s3.list_objects_v2(Bucket=bucket_name, Prefix='dh-new_scapes/')
+ 
 
     if query:
 
@@ -201,17 +212,24 @@ def main(model):
         # print(random_number)
 
         for match, idx in zip(batch_results, batch_result_indices):
+            s3_file_name = ref_names[idx]
+            # print('s3_file_name', s3_file_name)
+           
 
-            s3_audio_file_path = ref_names[idx]
-            # st.write(f"{result_path}")
-            # audio_file_name = str(name_to_result_mapping(result_path))
-            with open(s3_audio_file_path, 'rb') as file:
-                # Modify the load_audio_input function to handle S3 file path
-                input_audio = file.read()
+            if 'Contents' in response:
+                # Extract object keys that match the desired filename
+                
+                matching_keys = [obj['Key'] for obj in response['Contents'] if obj['Key'].endswith(s3_file_name)]
+
+                # Read the audio file content directly from S3 using smart_open for each matching key
+                for key in matching_keys:
+                    s3_file_path = f's3://{bucket_name}/{key}'
+                    # print('s3_file_path', s3_file_path)
+                    with open(s3_file_path, 'rb') as file:
+                        input_audio = file.read()
             
-            st.audio(input_audio, format='audio/wav')
-
-            audio_file_name = s3_audio_file_path.split('/')[-1]
+                st.audio(input_audio, format='audio/wav')
+          
 
             slider_key = f"rating_{idx}"
             # Display the radio buttons for rating
@@ -227,7 +245,7 @@ def main(model):
 
             # st.caption(f"Score: {match}")
             results.append(
-                [query, random_number, idx, audio_file_name, round(match.item(), 4), relevance_score])
+                [query, random_number, idx, s3_file_name, round(match.item(), 4), relevance_score])
 
         # Add a save button
         if st.button(f"Save Results"):
@@ -287,5 +305,11 @@ model = load_model(args.ckpt_path)
 
 folder_path = 'dh-new_scapes/'
 
-ref_audios, ref_names = build_audio_index_s3(bucket_name, folder_path, model.get_audio_embedding,  sampling_rate=model.sampling_rate)
+# ref_audios, ref_names = build_audio_index_s3(bucket_name, folder_path, model.get_audio_embedding,  sampling_rate=model.sampling_rate)
+loaded_data = torch.load('embeddings.pth')
+
+# Access the loaded tensors using the dictionary keys
+ref_audios = loaded_data['ref_audios']
+ref_names = loaded_data['ref_names']
+
 main(model)
