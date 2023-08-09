@@ -134,9 +134,9 @@ def save_results_to_csv(results):
 
     # check if results_fgbg.csv exists and if it does then append the new results to it
     if os.path.isfile('results_fgbg_sam.csv'):
-        df.to_csv('results_fgbg_sam.csv', mode='a', header=False, index=False)
+        df.to_csv('results_fgbg_0908.csv', mode='a', header=False, index=False)
     else:
-        df.to_csv('results_fgbg_sam.csv', mode='w', header=True, index=False)
+        df.to_csv('results_fgbg_0908.csv', mode='w', header=True, index=False)
 
 
 def main(model):
