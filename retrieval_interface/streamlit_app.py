@@ -199,8 +199,8 @@ def main(model):
                       aws_secret_access_key=aws_secret_access_key,
                       region_name=bucket_region)
 
-    # List objects (files) in the specified S3 folder with the given pattern
-    response = s3.list_objects_v2(Bucket=bucket_name, Prefix='dh-new_scapes/')
+    # List objects (files) in the specified S3 folder with the given patdhtern
+    response = s3.list_objects_v2(Bucket=bucket_name, Prefix='evaluation/')
 
     # Initialize session state variables
     if 'page' not in st.session_state:
@@ -357,10 +357,10 @@ model = load_model(args.ckpt_path)
 
 
 
-folder_path = 'dh-new_scapes/'
+
 
 # ref_audios, ref_names = build_audio_index_s3(bucket_name, folder_path, model.get_audio_embedding,  sampling_rate=model.sampling_rate)
-loaded_data = torch.load('embeddings.pth')
+loaded_data = torch.load('embeddings_clotho.pth')
 
 # Access the loaded tensors using the dictionary keys
 ref_audios = loaded_data['ref_audios']
