@@ -17,6 +17,7 @@ import json
 from google.oauth2 import service_account
 import gspread
 import time
+from streamlit.runtime.scriptrunner import get_script_run_ctx 
 
 from smart_open import open
 
@@ -40,6 +41,9 @@ aws_secret_access_key = st.secrets['AWS_SECRET_ACCESS_KEY']
 bucket_name = st.secrets['AWS_BUCKET_NAME']
 bucket_region = st.secrets['AWS_DEFAULT_REGION']
 database_name = st.secrets['DATABASE_NAME']
+
+session_id = get_script_run_ctx().session_id
+
 
 # Create a connection object.
 credentials = service_account.Credentials.from_service_account_info(
@@ -153,7 +157,7 @@ def map_file_path(
 
 
 def save_results_to_google_sheets(results):
-    df = pd.DataFrame(results, columns=['query', 'batch_index', 'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
+    df = pd.DataFrame(results, columns=['query', 'batch_index', 'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score', 'user_session_id'])
 
     worksheet = sheet.get_worksheet(0)  # Replace 0 with the index of your desired worksheet
     values = df.values.tolist()
@@ -263,7 +267,7 @@ def main(model):
 
         # geenrate a unique random number for each batch
 
-        random_number = random.randint(1000, 9999)
+        random_number = random.randint(10000, 99999)
         # print(random_number)
 
         for match, idx in zip(batch_results, batch_result_indices):
@@ -299,7 +303,7 @@ def main(model):
 
             # st.caption(f"Score: {match}")
             results.append(
-                [query, random_number, idx, s3_file_name, round(match.item(), 4), relevance_score])
+                [query, random_number, idx, s3_file_name, round(match.item(), 4), relevance_score, session_id])
 
         # Add a save button
         if st.button(f"Save Results"):
