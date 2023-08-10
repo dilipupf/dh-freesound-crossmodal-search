@@ -16,6 +16,7 @@ import boto3
 import json
 from google.oauth2 import service_account
 import gspread
+import time
 
 from smart_open import open
 
@@ -26,6 +27,7 @@ from crossmodal_alignment.retrieval_model import (
     AudioEmbeddingTorchText,
     TransformersModel,
 )
+
 
 # aws_access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 # aws_secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
@@ -58,7 +60,7 @@ def find_last_filled_row(worksheet):
 
 
 
-
+@st.cache_data
 def display_horizontal_stars(num_stars):
     star_emoji = "⭐️"  # Unicode character for BLACK STAR
     horizontal_stars = "".join([star_emoji for _ in range(num_stars)])
@@ -151,15 +153,6 @@ def map_file_path(
 
 
 def save_results_to_google_sheets(results):
-    # df = pd.DataFrame(results, columns=['query', 'batch_index',
-    #                   'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
-
-    # # check if results_fgbg.csv exists and if it does then append the new results to it
-    # if os.path.isfile('results_fgbg_sam.csv'):
-    #     df.to_csv('results_fgbg_0908.csv', mode='a', header=False, index=False)
-    # else:
-    #     df.to_csv('results_fgbg_0908.csv', mode='w', header=True, index=False)
-    # Your DataFrame with data to be inserted
     df = pd.DataFrame(results, columns=['query', 'batch_index', 'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
 
     worksheet = sheet.get_worksheet(0)  # Replace 0 with the index of your desired worksheet
@@ -170,6 +163,16 @@ def save_results_to_google_sheets(results):
 
     # Insert the data after the last filled row
     worksheet.insert_rows(values, last_filled_row)
+
+@st.cache_data
+def load_audio_files(matching_keys, bucket_name):
+    audio_files = {}
+    for key in matching_keys:
+        s3_file_path = f's3://{bucket_name}/{key}'
+        with open(s3_file_path, 'rb') as file:
+            input_audio = file.read()
+            audio_files[key] = input_audio
+    return audio_files
 
 
 def main(model):
@@ -182,8 +185,7 @@ def main(model):
     )
     query = query.strip()
 
-    if 'page' not in st.session_state:
-        st.session_state.page = 1
+
 
     with st.sidebar:
         k = st.number_input(
@@ -199,41 +201,61 @@ def main(model):
 
     # List objects (files) in the specified S3 folder with the given pattern
     response = s3.list_objects_v2(Bucket=bucket_name, Prefix='dh-new_scapes/')
+
+    # Initialize session state variables
+    if 'page' not in st.session_state:
+        st.session_state.page = 1
+    if 'prev_query' not in st.session_state:
+        st.session_state.prev_query = None
  
-
+ 
     if query:
-
         with torch.inference_mode():
             embedded_query = model.get_text_embedding(query)
         similarities = torch.cosine_similarity(
             embedded_query, ref_audios)
         # print('similarities', similarities.shape)
         topk_values, topk_indices = torch.topk(similarities, k=k)
-        # print('topk_values', topk_values)
-        # print('topk_indices', topk_indices)
 
         # Set the seed for reproducibility
-
         random_with_seed = random.Random(123)
+
         # Convert indices to a list and shuffle them randomly
         shuffled_indices = topk_indices.tolist()
         random_with_seed.shuffle(shuffled_indices)
 
-        print('shuffled_indices', shuffled_indices)
+        # print('shuffled_indices', shuffled_indices)
         # Retrieve the elements from the original tensor using shuffled indices
         shuffled_values = similarities[shuffled_indices]
 
-        batch_size = 10
+        batch_size = 20
         num_results = len(topk_values)
-        num_pages = num_results // batch_size + 1
+        num_pages = num_results // batch_size # floor division
+        if num_results % batch_size != 0:
+            num_pages += 1
 
-        # Number of audio results per batch
+        # Number of audio results per page
         results = []
 
-        # Slider for page selection
-        page = st.sidebar.slider("Page", 1, num_pages, 1)
-        start_index = (page - 1) * batch_size
-        end_index = min(page * batch_size, num_results)
+
+        # # Slider for page selection
+        # st.session_state.page = st.sidebar.slider("Page", 1, num_pages, st.session_state.page)
+        # with st.sidebar:
+        #     st.session_state.page = st.number_input(
+        #         "Page", value=st.session_state.page, min_value=1, max_value=num_pages, key="page_input"
+        #     )
+       
+        # # Programmatic value reset
+        # if st.session_state.page == 2:
+        #     st.session_state.page = 1
+    
+        if query != st.session_state.prev_query:
+            st.session_state.prev_query = query
+            st.session_state.page = 1  # Reset page to 1
+      
+
+        start_index = (st.session_state.page - 1) * batch_size
+        end_index = min(st.session_state.page * batch_size, num_results)
         batch_results = shuffled_values[start_index:end_index]
         batch_result_indices = shuffled_indices[start_index:end_index]
 
@@ -254,14 +276,13 @@ def main(model):
                 
                 matching_keys = [obj['Key'] for obj in response['Contents'] if obj['Key'].endswith(s3_file_name)]
 
-                # Read the audio file content directly from S3 using smart_open for each matching key
+                # Load audio files and cache them
+                cached_audio_files = load_audio_files(matching_keys, bucket_name)
+
                 for key in matching_keys:
-                    s3_file_path = f's3://{bucket_name}/{key}'
-                    # print('s3_file_path', s3_file_path)
-                    with open(s3_file_path, 'rb') as file:
-                        input_audio = file.read()
-            
-                st.audio(input_audio, format='audio/wav')
+                    # Use the cached audio file for display
+                    input_audio = cached_audio_files[key]
+                    st.audio(input_audio, format='audio/wav')
           
 
             slider_key = f"rating_{idx}"
@@ -271,7 +292,7 @@ def main(model):
                 range(1, 11)), key=slider_key, horizontal=True)
 
             st.columns([2, 4, 2])
-
+            
             # based on the value of x, display the corresponding number of stars dynamically
             if relevance_score:
                 display_horizontal_stars(relevance_score)
@@ -287,10 +308,10 @@ def main(model):
                 st.success("Results saved to database!")
 
 
-        # Rerun the app to display the updated page
-        if page != st.session_state.page:
-            print(st.session_state.page, page)
-            st.session_state.page = page
+        # # Rerun the app to display the updated page
+        # if page != st.session_state.page:
+        #     print(st.session_state.page, page)
+        #     st.session_state.page = page
 
 
 desc = """Run a retrieval interface app to test a text-to-audio search system.
