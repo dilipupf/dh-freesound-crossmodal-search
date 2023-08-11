@@ -17,7 +17,7 @@ import json
 from google.oauth2 import service_account
 import gspread
 import time
-
+from streamlit.runtime.scriptrunner import get_script_run_ctx 
 from smart_open import open
 
 dotenv_path = os.path.join(os.path.dirname(__file__), '..', '.env')
@@ -53,6 +53,21 @@ gc = gspread.authorize(credentials)
 # Get the Google Sheet by URL.
 sheet_url = st.secrets["private_gsheets_url"]
 sheet = gc.open_by_url(sheet_url)
+
+# generate_new_session_id() using get_script_run_ctx
+def generate_new_session_id():
+    session_id = get_script_run_ctx().session_id
+    return session_id
+
+# Check if the 'session_id' cookie exists
+if 'user_session_id' not in st.cookies():
+    # Generate a new session ID if the cookie doesn't exist
+    user_session_id = generate_new_session_id()
+    # Set the 'session_id' cookie
+    st.set_cookie('user_session_id', user_session_id)
+else:
+    # Retrieve the 'session_id' cookie value
+    user_session_id = st.cookies()['user_session_id']
 
 # Function to find the last filled row in the worksheet.
 def find_last_filled_row(worksheet):
@@ -153,7 +168,7 @@ def map_file_path(
 
 
 def save_results_to_google_sheets(results):
-    df = pd.DataFrame(results, columns=['query', 'batch_index', 'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score'])
+    df = pd.DataFrame(results, columns=['query', 'batch_index', 'index_of_audio_output_tensor', 'audio_file_name', 'similarity_score_by_model', 'user_relevance_score', 'user_session_id'])
 
     worksheet = sheet.get_worksheet(0)  # Replace 0 with the index of your desired worksheet
     values = df.values.tolist()
@@ -299,7 +314,7 @@ def main(model):
 
             # st.caption(f"Score: {match}")
             results.append(
-                [query, random_number, idx, s3_file_name, round(match.item(), 4), relevance_score])
+                [query, random_number, idx, s3_file_name, round(match.item(), 4), relevance_score, user_session_id])
 
         # Add a save button
         if st.button(f"Save Results"):
