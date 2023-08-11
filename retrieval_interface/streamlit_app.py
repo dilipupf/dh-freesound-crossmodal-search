@@ -54,20 +54,10 @@ gc = gspread.authorize(credentials)
 sheet_url = st.secrets["private_gsheets_url"]
 sheet = gc.open_by_url(sheet_url)
 
-# generate_new_session_id() using get_script_run_ctx
-def generate_new_session_id():
-    session_id = get_script_run_ctx().session_id
-    return session_id
+user_session_id = get_script_run_ctx().session_id
 
-# Check if the 'session_id' cookie exists
-if 'user_session_id' not in st.cookies():
-    # Generate a new session ID if the cookie doesn't exist
-    user_session_id = generate_new_session_id()
-    # Set the 'session_id' cookie
-    st.set_cookie('user_session_id', user_session_id)
-else:
-    # Retrieve the 'session_id' cookie value
-    user_session_id = st.cookies()['user_session_id']
+
+
 
 # Function to find the last filled row in the worksheet.
 def find_last_filled_row(worksheet):
