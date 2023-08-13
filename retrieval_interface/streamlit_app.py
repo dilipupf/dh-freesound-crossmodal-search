@@ -180,7 +180,7 @@ def load_audio_files(matching_keys, bucket_name):
 
 
 def main(model):
-    st.title("Cross-modal Search Demo")
+    st.title("Experiment 2: Cross-modal Search")
 
     query = st.text_input(
         "Enter your search query:",
