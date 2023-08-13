@@ -216,6 +216,9 @@ def main(model):
  
  
     if query:
+        with st.sidebar:
+            st.write(f"Your search query: {query}")
+            
         with torch.inference_mode():
             embedded_query = model.get_text_embedding(query)
         similarities = torch.cosine_similarity(
