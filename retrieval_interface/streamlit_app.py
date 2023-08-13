@@ -191,11 +191,13 @@ def main(model):
 
 
 
-    with st.sidebar:
-        k = st.number_input(
-            "Number of results returned", value=20, min_value=1, max_value=100
-        )
-        st.write(f"Number of items in dataset {len(ref_names)}")
+    # with st.sidebar:
+    #     k = st.number_input(
+    #         "Number of results returned", value=10, min_value=1, max_value=100
+    #     )
+    #     st.write(f"Number of items in dataset {len(ref_names)}")
+
+    k = 10
     
     # Initialize the S3 client
     s3 = boto3.client('s3',
