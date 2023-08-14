@@ -306,6 +306,10 @@ def main(model):
             if relevance_score:
                 display_horizontal_stars(relevance_score)
 
+            st.markdown(
+                '<hr style="margin: 20px 0; border: 1px solid #ccc; background-color: #f0f0f0;">',
+                unsafe_allow_html=True
+            )
             # st.caption(f"Score: {match}")
             results.append(
                 [query, random_number, idx, s3_file_name, round(match.item(), 4), relevance_score, session_id])
